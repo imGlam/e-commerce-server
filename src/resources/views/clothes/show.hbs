@@ -1,11 +1,11 @@
-<form class="mt-4" name="container-form" method="POST" action="/clothes/handle-form-actions"> 
+{{!-- <form class="mt-4" name="container-form" method="POST" action="/clothes/handle-form-actions">  --}}
   <table class="table mt-4">
       <div class="mt-4">
         <h2>Clothes Storage </h2>
           <a href="/clothes/trash">Deleted items ({{deletedCount}})</a>
       </div>
   
-        <div class="mt-4 d-flex align-items-center">       
+        <div class="mt-4 d-flex align-items-center">        
           <div class="form-check">
             <input class="form-check-input" type="checkbox" value="" id="checkbox-all">
             <label class="form-check-label" for="checkbox-all">
@@ -53,7 +53,7 @@
         <td>{{this.createdAt}}</td>
         <td>
           <a href="/clothes/{{this._id}}/edit" class="btn btn-link">Edit</a>
-          <button type="button" class="btn btn-link" data-toggle="modal" data-target="#delete-course-modal" data-whatever="{{this._id}}">
+          <button type="button" class="btn btn-link" data-toggle="modal" data-target="#delete-item-modal" data-whatever="{{this._id}}">
             Delete
           </button>
         </td> 
@@ -62,61 +62,63 @@
       <tr>
         <td colspan="5" class="text-center">
           No clothes available
-          <a href="/courses/create">Upload new cloth here</a>
+          <a href="/clothes/upload">Upload new cloth here</a>
         </td>
       </tr>
       {{/each}}
     </tbody>
   </table>
 
-</form>
+{{!-- </form> --}}
 
-{{!-- delete form --}}
-<form id="form-course-delete" method="POST"></form>
-
-
-{{!-- confirm delete course --}}
-<div class="modal fade" id="delete-course-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
+{{!-- confirm to delete item --}}
+<div class="modal fade" id="delete-item-modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Confirm to Delete</h5>
+        <h5 class="modal-title" id="exampleModalLabel">Are you sure to delete ?</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
-      <div class="modal-body">
-        <strong>Are you sure to delete this item?</strong>
-      </div>
+
       <div class="modal-footer">
-        <button type="button" class="btn btn-primary btn-lg" data-dismiss="modal">No</button>
-        <button id="btn-course-delete" type="button" class="btn btn-danger btn-lg" >Uyes</button>
+        <button type="button" class="btn btn-primary" data-dismiss="modal">No</button>
+        <button id="btn-delete-item" type="button" class="btn btn-danger">Uyes</button>
       </div>
     </div>
   </div>
 </div>
 
+
+<form  name="delete-item-form" method="POST"></form>
+
 <script>
-  document.addEventListener('DOMContentLoaded', function() {
-    var courseId
-    const btnCourseDelete = document.getElementById('btn-course-delete');
-    const formCourseDelete = document.getElementById('form-course-delete');
-    const containerForm = $('form[name="container-form"]')
-    const checkboxAll = $('#checkbox-all');
-    const courseItemCheckbox = $('input[name="clothIds[]"]')
+
+  document.addEventListener('DOMContentLoaded', function() { 
+
+    var clothId 
+    const btnDeleteItem = document.getElementById('btn-delete-item');
+    const deleteForm  = document.forms['delete-item-form'];
+    const containerForm = document.forms['container-form']
     const applyBtn = $('.apply-btn')
+    const itemCheckbox = $('input[name="clothIds[]"')
+    const allSelect = $('#checkbox-all')
 
-    $('#delete-course-modal').on('show.bs.modal', function (event) {
-      var button = $(event.relatedTarget) 
-      courseId = button.data('whatever') 
-    });
+    console.log(applyBtn)
 
-    btnCourseDelete.onclick = () => {
-      formCourseDelete.action = "/courses/" + courseId + "?_method=DELETE";
-      formCourseDelete.submit();
+    $('#delete-item-modal').on('show.bs.modal', function (event) {
+      var button = $(event.relatedTarget)
+      clothId = button.data('whatever') 
+
+    })
+
+    btnDeleteItem.onclick = () => { 
+      deleteForm.action = '/clothes/' + clothId + '?_method=delete'
+      deleteForm.submit()
     }
-  
-    containerForm.on('submit' , (e) => {
+
+     containerForm.on('submit' , (e) => {
       var isSubmittable = !applyBtn.hasClass('disabled');
 
       if(!isSubmittable){
@@ -124,32 +126,29 @@
       }
     })
 
-
-    //checkbox all changed
-    checkboxAll.change((e) => {
-      var isCheckedAll =$(e.target).prop('checked')
-      courseItemCheckbox.prop('checked', isCheckedAll)
-      renderCheckedBtn()
-      
-    }) 
-
-    //courses item checkbox changed
-    courseItemCheckbox.change((e) => { 
-      var isCheckedAll = courseItemCheckbox.length === $('input[name="clothIds[]"]:checked').length
-      checkboxAll.prop('checked', isCheckedAll)
-      renderCheckedBtn()
+    allSelect.change((e) => { 
+      var isCheckedAll = $(e.target).prop('checked')
+      itemCheckbox.prop('checked', isCheckedAll)
+      renderApplyBtn()
     })
 
-    const renderCheckedBtn = () => { 
-      var checkedCount =  $('input[name="clothIds[]"]:checked').length
-      if(checkedCount >0) { 
+    courseItemCheckbox.change((e) => { 
+      const isCheckedAll = courseItemCheckbox.length === $('input[name="clothIds[]"]:checked').length
+      allSelect.prop('checked', isCheckedAll)
+      renderApplyBtn()
+    })
+
+    const renderApplyBtn = () => { 
+      var checkedCount = $('input[name="clothIds[]"]:checked').length
+      if(checkedCount) { 
         applyBtn.attr('disabled', false)
       }
-      else{ 
+      else { 
         applyBtn.attr('disabled', true)
       }
     }
 
-  })
-</script>
 
+  })
+
+</script>

@@ -1,34 +1,41 @@
-<form name="container-form"  method="POST" action="/clothes/handle-form-actions">
-   <table class="table mt-4">
-      <div>
-        <a href="/clothes/">Clothes Storage</a>
-        <h2>Deleted Items : </h2>
-     </div>   
-          <div class="mt-4 d-flex align-items-center">       
-            <div class="form-check">
-              <input class="form-check-input" type="checkbox" value="" id="checkbox-all">
-              <label class="form-check-label" for="checkbox-all">
-                Select All
-              </label>
-            </div>
-      
-            <select class="form-control form-control-sm checkbox-select-all-options " name="action" style="margin : 0px 14px ; width : 120px">
-              <option value="">--Options--</option>
-              <option value="delete-forever">Delete</option>
-              <option value="restore">Restore</option>
-            </select>
-      
-            <button class="btn btn-primary btn-sm apply-btn" disabled >Apply</button>
-          </div>
-  
+{{!-- <form class="mt-4" name="container-form" method="POST" action="/clothes/handle-form-actions">  --}}
+  <table class="table mt-4">
+      <div class="mt-4">
+        <h2>Deleted Items </h2>
+          <a href="/clothes">Items Storage </a>
       </div>
+  
+        <div class="mt-4 d-flex align-items-center">        
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" value="" id="checkbox-all">
+            <label class="form-check-label" for="checkbox-all">
+              Select All
+            </label>
+          </div>
+    
+          <select class="form-control form-control-sm checkbox-select-all-options " name="action" style="margin : 0px 14px ; width : 120px">
+            <option value="">--Options--</option>
+            <option value="delete">Delete</option>
+          </select>
+    
+          <button class="btn btn-primary btn-sm apply-btn" disabled >Apply</button>
+        </div>
     <thead>
       <tr>
         <th></th>
         <th scope="col">#</th>
-        <th scope="col">Name</th>
-        <th scope="col">Level</th>
-        <th scope="col">Time created</th>
+        <th scope="col">
+          Name
+
+        </th>
+        <th scope="col">
+          Image
+
+        </th>
+        <th scope="col">
+          Time created
+
+        </th>
         <th></th>
       </tr>
     </thead>
@@ -45,8 +52,8 @@
         <td>{{this.level}}</td>
         <td>{{this.createdAt}}</td>
         <td>
-          <a href="/clothes/{{this._id}}/restore"  class="btn btn-link btn-restore " data-whatever="{{this._id}}">Restore</a>
-          <button type="button" class="btn btn-link" data-toggle="modal" data-target="#delete-course-modal" data-whatever="{{this._id}}">
+          <a href="" class="btn btn-link btn-restore" data-whatever="{{this._id}}">Restore</a>
+          <button type="button" class="btn btn-link" data-toggle="modal" data-target="#delete-item-modal" data-whatever="{{this._id}}">
             Delete
           </button>
         </td> 
@@ -54,103 +61,73 @@
       {{else}}
       <tr>
         <td colspan="5" class="text-center">
-          No items deleted .    
-          <a href="/clothes">My Items</a>
+          No clothes available
+          <a href="/clothes/upload">Upload new cloth here</a>
         </td>
       </tr>
       {{/each}}
     </tbody>
-   </table>
-</form>
+  </table>
 
+{{!-- </form> --}}
 
-
-<form id="form-course-delete" method="POST"></form>
-<form id="form-course-restore" method="POST"></form>
-
-
-{{!-- confirm delete course --}}
-<div class="modal fade" id="delete-course-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
+{{!-- confirm to delete item --}}
+<div class="modal fade" id="delete-item-modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Confirm to Delete</h5>
+        <h5 class="modal-title" id="exampleModalLabel">Are you sure to delete ?</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
-      <div class="modal-body">
-        <strong>Are you sure to delete this course?</strong>
-      </div>
+
       <div class="modal-footer">
-        <button type="button" class="btn btn-primary btn-lg" data-dismiss="modal">No</button>
-        <button id="btn-course-delete" type="button" class="btn btn-danger btn-lg" >Uyes</button>
+        <button type="button" class="btn btn-primary" data-dismiss="modal">No</button>
+        <button id="btn-delete-item" type="button" class="btn btn-danger">Uyes</button>
       </div>
     </div>
   </div>
 </div>
 
+
+<form  name="delete-item-form" method="POST"></form>
+<form  name="restore-item-form" method="POST"></form>
+
 <script>
-  document.addEventListener('DOMContentLoaded', function() {
-    var clothId
-    const btnCourseDelete = document.getElementById('btn-course-delete');
-    const formCourseDelete = document.getElementById('form-course-delete');
-    const formCourseRestore = document.getElementById('form-course-restore');
-    const containerForm = $('form[name="container"]')
-    const restoreBtn = $('.btn-restore')
+
+  document.addEventListener('DOMContentLoaded', function() { 
+
+    var clothId 
+    const btnDeleteItem = document.getElementById('btn-delete-item');
+    const deleteForm  = document.forms['delete-item-form'];
+    const restoreForm  = document.forms['restore-item-form'];
+    const containerForm = document.forms['container-form']
     const applyBtn = $('.apply-btn')
-    const courseItemCheckbox = $('input[name="clothIds[]"')
+    const itemCheckbox = $('input[name="clothIds[]"')
     const allSelect = $('#checkbox-all')
+    const restoreBtn = $('.btn-restore')
 
 
-    $('#delete-course-modal').on('show.bs.modal', function (event) {
-      var button = $(event.relatedTarget) 
+    $('#delete-item-modal').on('show.bs.modal', function (event) {
+      var button = $(event.relatedTarget)
       clothId = button.data('whatever') 
-      console.log(clothId)
-    });
-
-    btnCourseDelete.onclick = () => {
-      formCourseDelete.action = "/clothes/" + clothId + "/force?_method=DELETE";
-      formCourseDelete.submit();
-    }
-    restoreBtn.click((e) => {
-        e.preventDefault();
-        var clothId = $(e.target).data('whatever')
-        formCourseRestore.action = "clothes/" + clothId + "/restore?_method=PATCH"
-        formCourseRestore.submit()
 
     })
- 
-    containerForm.on('submit' , (e) => {
-      var isSubmittable = !applyBtn.hasClass('disabled');
 
-      if(!isSubmittable){
-        e.preventDefault()
-      }
-    })
-
-    allSelect.change((e) => { 
-      var isCheckedAll = $(e.target).prop('checked')
-      courseItemCheckbox.prop('checked', isCheckedAll)
-      renderApplyBtn()
-    })
-
-    courseItemCheckbox.change((e) => { 
-      const isCheckedAll = courseItemCheckbox.length === $('input[name="clothIds[]"]:checked').length
-      allSelect.prop('checked', isCheckedAll)
-      renderApplyBtn()
-    })
-
-    const renderApplyBtn = () => { 
-      var checkedCount = $('input[name="clothIds[]"]:checked').length
-      if(checkedCount) { 
-        applyBtn.attr('disabled', false)
-      }
-      else { 
-        applyBtn.attr('disabled', true)
-      }
+    btnDeleteItem.onclick = () => { 
+      deleteForm.action = '/clothes/' + clothId + '/force?_method=delete'
+      deleteForm.submit()
     }
 
+    restoreBtn.click((e) => { 
+      e.preventDefault();
+      
+      var itemId = $(e.target).data('whatever')
+      restoreForm.action = '/clothes/' + itemId + '/restore?_method=PATCH' 
+      restoreForm.submit()
+
+    })
   })
-</script>
 
+</script>

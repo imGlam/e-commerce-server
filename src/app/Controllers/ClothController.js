@@ -24,7 +24,7 @@ class SiteController {
 
   //[GET] /clothes/:id/edit
   edit(req, res) {
-    Cloth.findById({ _id: req.params.id }).then((cloth) =>
+    Cloth.findById(req.params.id).then((cloth) =>
       res.render("clothes/edit", {
         cloth: MongooseToObject(cloth),
       })
@@ -64,7 +64,28 @@ class SiteController {
 
   //[DELETE] /clothes/:id/force
   force(req, res, next) {
-    Cloth.deleteOne({ _id: { $in: req.body.clothIds } }, req.body)
+    Cloth.deleteOne({ _id: req.params.id }, req.body)
+      .then(() => res.redirect("back"))
+      .catch(next);
+  }
+
+  //[PUT /clothes/:id
+  update(req, res, next) {
+    Cloth.updateOne({ _id: req.params.id }, req.body)
+      .then(() => res.redirect("/clothes"))
+      .catch(next);
+  }
+
+  //[DELETE] /clothes/:id
+  delete(req, res, next) {
+    Cloth.delete({ _id: req.params.id })
+      .then(() => res.redirect("back"))
+      .catch(next);
+  }
+
+  //[PATCH] /clothes/:id/restore
+  restore(req, res, next) {
+    Cloth.restore({ _id: req.params.id })
       .then(() => res.redirect("back"))
       .catch(next);
   }

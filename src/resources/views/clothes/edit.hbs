@@ -1,23 +1,22 @@
 <div class="mt-4">
-    <h1>Edit</h1>
-    <form method="post" action="api/upload">
+<form method="POST" action="/clothes/{{cloth._id}}?_method=PUT">
   <div class="form-group">
-    <label for="name">Name</label>
-    <input type="text" class="form-control" name="name" value="{{cloth.name}}" id="name" >
+    <label for="name">Name</label>  
+    <input type="text" class="form-control" name="name" value="{{cloth.name}}" id="name">
   </div>
   <div class="form-group">
     <label for="image">Image</label>
-    <input type="text" class="form-control" name="image" value="{{cloth.image}}" id="image" >
+    <input type="text" class="form-control" name="image" value="{{cloth.image}}" id="image">
   </div>
-   <div class="form-group">
+  <div class="form-group">
     <label for="description">Description</label>
     <input type="text" class="form-control" name="description" value="{{cloth.description}}" id="description">
   </div>
-   <div class="form-group">
+  <div class="form-group">
     <label for="price">Price</label>
     <input type="text" class="form-control" name="price" value="{{cloth.price}}" id="price">
   </div>
-
-  <button type="submit" class="btn btn-primary">Edit</button>
+  
+  <button type="text" class="btn btn-primary">Edit</button>
 </form>
 </div>
