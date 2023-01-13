@@ -45,7 +45,7 @@ class SiteController {
           .catch(next);
         break;
       case "delete-forever":
-        Cloth.deleteOne({ _id: { $in: req.body.clothIds } }, req.body)
+        Cloth.deleteMany({ _id: { $in: req.body.clothIds } }, req.body)
           .then(() => res.redirect("back"))
           .catch(next);
     }

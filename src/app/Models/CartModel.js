@@ -4,13 +4,14 @@ const Schema = mongoose.Schema;
 const slug = require("mongoose-slug-generator");
 mongoose.set("strictQuery", true);
 
-const ClothSchema = new Schema(
+const CartSchema = new Schema(
   {
     name: { type: String, require: true },
     image: { type: String, require: true },
     description: { type: String, require: true },
     price: { type: Number, require: true },
     size: { type: String },
+    amount: { type: Number, require: true, default: 1 },
   },
   {
     timestamps: true,
@@ -18,9 +19,9 @@ const ClothSchema = new Schema(
 );
 
 mongoose.plugin(slug);
-ClothSchema.plugin(mongooseDelete, {
+CartSchema.plugin(mongooseDelete, {
   deletedAt: true,
   overrideMethods: "all",
 });
 
-module.exports = mongoose.model("Cloth", ClothSchema);
+module.exports = mongoose.model("Cart", CartSchema);

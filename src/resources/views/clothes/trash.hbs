@@ -1,4 +1,4 @@
-{{!-- <form class="mt-4" name="container-form" method="POST" action="/clothes/handle-form-actions">  --}}
+<form class="mt-4" name="container-form" method="POST" action="/clothes/handle-form-actions"> 
   <table class="table mt-4">
       <div class="mt-4">
         <h2>Deleted Items </h2>
@@ -13,9 +13,10 @@
             </label>
           </div>
     
-          <select class="form-control form-control-sm checkbox-select-all-options " name="action" style="margin : 0px 14px ; width : 120px">
+          <select class="form-control form-control-sm checkbox-select-all-options " name="action" style="margin : 0px 14px ; width : 120px" required>
             <option value="">--Options--</option>
-            <option value="delete">Delete</option>
+            <option value="delete-forever">Delete</option>
+            <option value="restore">Restore</option>
           </select>
     
           <button class="btn btn-primary btn-sm apply-btn" disabled >Apply</button>
@@ -69,7 +70,7 @@
     </tbody>
   </table>
 
-{{!-- </form> --}}
+</form>
 
 {{!-- confirm to delete item --}}
 <div class="modal fade" id="delete-item-modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -104,7 +105,7 @@
     const restoreForm  = document.forms['restore-item-form'];
     const containerForm = document.forms['container-form']
     const applyBtn = $('.apply-btn')
-    const itemCheckbox = $('input[name="clothIds[]"')
+    const itemCheckbox = $('input[name="clothIds[]"]')
     const allSelect = $('#checkbox-all')
     const restoreBtn = $('.btn-restore')
 
@@ -128,6 +129,27 @@
       restoreForm.submit()
 
     })
+
+    allSelect.change((e) => {
+      var isCheckedAll = $(e.target).prop('checked')
+      itemCheckbox.prop('checked', isCheckedAll)
+      renderApplyBtn()   
+    })
+
+    itemCheckbox.change((e) => {
+      var isCheckedAll = itemCheckbox.length ===$('input[name="clothIds[]"]:checked').length
+      allSelect.prop('checked', isCheckedAll)
+      renderApplyBtn()   
+    })
+
+    function renderApplyBtn( ) { 
+      var checkedCount = $('input[name="clothIds[]"]:checked').length
+      if(checkedCount > 0) {
+        applyBtn.attr('disabled', false)
+      }else{
+        applyBtn.attr('disabled', true)
+      }
+    }
   })
 
 </script>

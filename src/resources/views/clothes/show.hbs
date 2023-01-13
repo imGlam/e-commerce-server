@@ -1,25 +1,24 @@
-{{!-- <form class="mt-4" name="container-form" method="POST" action="/clothes/handle-form-actions">  --}}
-  <table class="table mt-4">
+<form class="mt-4" name="container-form" method="POST" action="/clothes/handle-form-actions"> 
+  <table  class="table mt-4">
       <div class="mt-4">
         <h2>Clothes Storage </h2>
           <a href="/clothes/trash">Deleted items ({{deletedCount}})</a>
+
+          <div class="mt-4 d-flex align-items-center">
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" value="" id="checkbox-all">
+              <label class="form-check-label" for="checkbox-all">
+                Select All
+              </label>
+            </div>
+            <select name="action" class="form-control"  style="margin : 0px 14px ; width : 140px" required>
+              <option value="">---Actions---</option>
+              <option value="delete">Delete</option>
+            </select>
+            <button class="btn btn-primary apply-btn " disabled="disabled" >Apply</button>
+          </div>      
       </div>
-  
-        <div class="mt-4 d-flex align-items-center">        
-          <div class="form-check">
-            <input class="form-check-input" type="checkbox" value="" id="checkbox-all">
-            <label class="form-check-label" for="checkbox-all">
-              Select All
-            </label>
-          </div>
-    
-          <select class="form-control form-control-sm checkbox-select-all-options " name="action" style="margin : 0px 14px ; width : 120px">
-            <option value="">--Options--</option>
-            <option value="delete">Delete</option>
-          </select>
-    
-          <button class="btn btn-primary btn-sm apply-btn" disabled >Apply</button>
-        </div>
+          
     <thead>
       <tr>
         <th></th>
@@ -44,8 +43,8 @@
       <tr>
         <td>
           <div class="form-check">
-            <input class="form-check-input" type="checkbox" value="{{this._id}}" name="clothIds[]">
-          </div>
+              <input class="form-check-input" type="checkbox" value="{{this._id}}" name="clothIds[]" >
+            </div>
         </td>
         <th scope="row">{{sum @index 1}}</th>
         <td>{{this.name}}</td>
@@ -69,7 +68,7 @@
     </tbody>
   </table>
 
-{{!-- </form> --}}
+</form>
 
 {{!-- confirm to delete item --}}
 <div class="modal fade" id="delete-item-modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -102,10 +101,9 @@
     const deleteForm  = document.forms['delete-item-form'];
     const containerForm = document.forms['container-form']
     const applyBtn = $('.apply-btn')
-    const itemCheckbox = $('input[name="clothIds[]"')
-    const allSelect = $('#checkbox-all')
+    const itemCheckbox = $('input[name="clothIds[]"]')
+    const checkboxAll = $('#checkbox-all') 
 
-    console.log(applyBtn)
 
     $('#delete-item-modal').on('show.bs.modal', function (event) {
       var button = $(event.relatedTarget)
@@ -118,35 +116,36 @@
       deleteForm.submit()
     }
 
-     containerForm.on('submit' , (e) => {
-      var isSubmittable = !applyBtn.hasClass('disabled');
+    //checkbox all changed
+    checkboxAll.change((e) => {
+      var isCheckedAll  = $(e.target).prop('checked')
+      itemCheckbox.prop('checked' , isCheckedAll)
+      renderApplyBtn()
+    })
 
-      if(!isSubmittable){
-        e.preventDefault()
+    //checkbox item changed
+    itemCheckbox.change((e) => {
+      var isCheckedAll = itemCheckbox.length ===  $('input[name="clothIds[]"]:checked').length
+      checkboxAll.prop('checked' , isCheckedAll)
+      renderApplyBtn()
+    })
+
+    containerForm.on('submit', (e) => {
+      var isSubmittable =  !applyBtn.hasClass('disabled')
+      if(!isSubmittable) { 
+        e.preventDefault()  
       }
     })
 
-    allSelect.change((e) => { 
-      var isCheckedAll = $(e.target).prop('checked')
-      itemCheckbox.prop('checked', isCheckedAll)
-      renderApplyBtn()
-    })
-
-    courseItemCheckbox.change((e) => { 
-      const isCheckedAll = courseItemCheckbox.length === $('input[name="clothIds[]"]:checked').length
-      allSelect.prop('checked', isCheckedAll)
-      renderApplyBtn()
-    })
-
-    const renderApplyBtn = () => { 
+    function renderApplyBtn() { 
       var checkedCount = $('input[name="clothIds[]"]:checked').length
-      if(checkedCount) { 
-        applyBtn.attr('disabled', false)
-      }
-      else { 
-        applyBtn.attr('disabled', true)
+      if(checkedCount > 0) { 
+        applyBtn.attr('disabled' , false)
+      }else { 
+        applyBtn.attr('disabled' , true )  
       }
     }
+
 
 
   })
