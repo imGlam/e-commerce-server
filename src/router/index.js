@@ -1,11 +1,29 @@
-const apiRouter = require("./api");
-const siteRouter = require("./site");
-const clothRouter = require("./cloth");
+const productRouter = require("./product");
+const inventoryRouter = require("./inventory");
+const cartRouter = require("./cart");
+const orderRouter = require("./order");
+const redisRouter = require("./redis");
+const httpErrors = require("http-errors");
 
 function route(app) {
-  app.use("/api", apiRouter);
-  app.use("/clothes", clothRouter);
-  app.use("/", siteRouter);
+  app.use("/products", productRouter);
+  app.use("/inventories", inventoryRouter);
+  app.use("/carts", cartRouter);
+  app.use("/orders", orderRouter);
+  app.use("/redis", redisRouter);
+  app.use("/", (req, res, next) => res.render("home"));
+  //error 404 catch
+  app.use((req, res, next) => {
+    next(httpErrors(404, "Page not found !"));
+  });
+
+  app.use((err, req, res, next) => {
+    res.status(err.status || 500);
+    res.json({
+      status: err.status || 500,
+      message: err.message,
+    });
+  });
 }
 
 module.exports = route;

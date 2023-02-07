@@ -1,0 +1,118 @@
+@urlDev = http://localhost:4000
+
+### add product 
+POST http://localhost:4000/products/add
+Content-Type: application/json
+
+{
+    "product" : {
+        "productId": 4,
+        "code": "N-004",
+        "name": "Nike Air Force 1 LE",
+        "brand": "Nike",
+        "description": "Women's Shoes",
+        "specs" : [
+            {
+                "k" : "price" , "v" : 90
+            }
+        ],
+        "price" : 90,
+        "image" : "https://static.nike.com/a/images/t_PDP_864_v1/f_auto,b_rgb:f5f5f5/ebad848a-13b1-46d5-a85e-49b4b6a4953c/air-force-1-le-big-kids-shoes-3JNSvS.png"
+    }
+}
+
+### get products 
+GET http://localhost:4000/products/get
+Content-Type: application/json
+
+### get product by id 
+GET http://localhost:4000/products/get/2
+  
+### add inventory 
+POST http://localhost:4000/inventories/add
+Content-Type: application/json
+
+{
+    "inventory": { 
+        "productId": 3,
+        "quantity": 1411,
+        "reservation": []
+    }
+}
+
+### get inventory by id 
+GET http://localhost:4000/inventories/get/1
+Content-Type: application/json
+
+
+
+
+### add to cart 
+POST http://localhost:4000/carts/add
+Content-Type: application/json
+
+{
+     
+        "productId": 1,
+        "quantity": 2,
+        "price" : 100,
+        "userId": "1104" 
+    
+}
+
+### remove from cart
+PATCH http://localhost:4000/carts/remove
+Content-Type: application/json
+
+{
+    "userId":304,
+    "productId": 1,
+    "quantity": 5
+}
+
+###
+GET  http://localhost:4000/carts/get/rORxYQCZCwJR8nZ8m164whlHnU4T-4OY
+
+
+
+### add to order 
+POST http://localhost:4000/orders/add
+Content-Type: application/json  
+
+{
+        "fullName" : "Huynh Gia Lam",
+        "email" : "gialamhuynh3004@gmail.com",
+        "phoneNumber" : "0966440814",
+        "address" : "2/39 Do Quang Co",
+        "province" : "HCM",
+        "district" : "Cu Chi",
+        "ward" : "Thi tran Cu Chi"
+    
+}
+
+### REDIS set user 
+POST {{urlDev}}/redis/user 
+Content-Type: application/json
+
+{
+    "key" : "u:1411",
+    "payload" : {
+        "uid" : 1411,
+        "name" : "puonguyen.com"
+    } 
+}
+
+### REDIS get user 
+GET {{urlDev}}/redis/user
+Content-Type: application/json
+
+{
+    "key" : "u:304",
+    "payload" : {
+        "uid" : 304,
+        "name" : "tinycloset.com"
+    } 
+}
+
+
+ 
