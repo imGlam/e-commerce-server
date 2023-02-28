@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const client = require("../databases/redis");
 
 const {
   setPromise,
@@ -7,6 +8,6 @@ const {
 } = require("../app/controllers/RedisController");
 
 router.post("/user", setPromise);
-router.get("/user", getPromise);
+router.get("/user/:userId", getPromise);
 
 module.exports = router;

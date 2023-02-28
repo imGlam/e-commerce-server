@@ -6,7 +6,7 @@ const OrderSchema = new Schema(
     userInfo: Object,
     payment: { type: String, default: "cash" },
     products: Array,
-    subTotal: { type: Number, default: 0 },
+    subTotal: { type: Number, require: true },
     state: { type: String, default: "pending" },
   },
   {

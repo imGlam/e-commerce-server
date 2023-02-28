@@ -6,10 +6,20 @@ const ProductSchema = new Schema(
     name: { type: String, required: true },
     brand: { type: String, required: true },
     description: { type: String, required: true },
-    releaseDate: { type: Date },
+    releaseDate: { type: Date, default: Date.now() },
     price: { type: Number, required: true },
     image: { type: String, required: true },
-    specs: { type: Array, default: [], unique: true },
+    specs: [
+      {
+        k: { type: String, required: true },
+        v: { type: String, required: true },
+      },
+    ],
+    inStock: {
+      type: Schema.Types.ObjectId,
+      ref: "inventories",
+    },
+    category: { type: String, required: true },
   },
   {
     timestamps: true,

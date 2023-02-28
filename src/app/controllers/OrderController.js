@@ -1,10 +1,15 @@
-const { addToOrder } = require("../services/OrderService");
+const { getOrder, createOrder } = require("../services/OrderService");
+const {
+  createOrderRedis,
+  createOrderRedisTest,
+} = require("../services/RedisService");
 
 module.exports = {
-  addToOrder: async (req, res, next) => {
+  createOrder: async (req, res, next) => {
     try {
-      const userId = req.session.id;
+      // const userId = req.session.id;
       const {
+        userId,
         fullName,
         email,
         phoneNumber,
@@ -17,10 +22,18 @@ module.exports = {
       const shippingAddress = { address, province, district, ward };
 
       return res.json({
-        elements: await addToOrder(userId, shippingAddress, userInfo),
+        elements: await createOrderRedis(userId, shippingAddress, userInfo),
       });
     } catch (err) {
       next(err);
     }
+  },
+  getOrder: async (req, res, next) => {
+    const { userId } = req.params;
+    return res.json(await getOrder(userId));
+  },
+  createOrderRedisTest: async (req, res, next) => {
+    const { userId } = req.body;
+    return res.json(await createOrderRedisTest(userId));
   },
 };

@@ -1,6 +1,7 @@
 const {
   addInventory,
   getInventoryById,
+  getBrandInventory,
 } = require("../services/InventoryService");
 
 module.exports = {
@@ -21,4 +22,5 @@ module.exports = {
       next(err);
     }
   },
+
 };

@@ -5,6 +5,7 @@ const InventorySchema = new Schema(
     productId: Number,
     quantity: Number,
     reservation: Array,
+    brand: String,
     createAt: { type: Date, default: Date.now },
   },
   {

@@ -4,7 +4,7 @@ const { _product } = require("../models/ProductModel");
 
 module.exports = {
   //add to cart
-  addToCart: async (productId, quantity, userId, price) => {
+  addToCart: async (productId, quantity, userId) => {
     var productIdList;
     const stock = await _inventory.updateOne(
       {
@@ -62,7 +62,6 @@ module.exports = {
               products: {
                 productId,
                 quantity,
-                price,
               },
             },
           },

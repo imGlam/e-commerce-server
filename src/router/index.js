@@ -3,6 +3,7 @@ const inventoryRouter = require("./inventory");
 const cartRouter = require("./cart");
 const orderRouter = require("./order");
 const redisRouter = require("./redis");
+const userRouter = require("./user");
 const httpErrors = require("http-errors");
 
 function route(app) {
@@ -11,7 +12,10 @@ function route(app) {
   app.use("/carts", cartRouter);
   app.use("/orders", orderRouter);
   app.use("/redis", redisRouter);
-  app.use("/", (req, res, next) => res.render("home"));
+  app.use("/users", userRouter);
+  app.use("/", async (req, res, next) => {
+    res.render("home");
+  });
   //error 404 catch
   app.use((req, res, next) => {
     next(httpErrors(404, "Page not found !"));

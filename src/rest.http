@@ -6,18 +6,26 @@ Content-Type: application/json
 
 {
     "product" : {
-        "productId": 4,
-        "code": "N-004",
-        "name": "Nike Air Force 1 LE",
-        "brand": "Nike",
-        "description": "Women's Shoes",
-        "specs" : [
-            {
-                "k" : "price" , "v" : 90
-            }
-        ],
-        "price" : 90,
-        "image" : "https://static.nike.com/a/images/t_PDP_864_v1/f_auto,b_rgb:f5f5f5/ebad848a-13b1-46d5-a85e-49b4b6a4953c/air-force-1-le-big-kids-shoes-3JNSvS.png"
+        "productId": 14,
+        "code": "P14",
+        "name": "Vans Old Skool",
+        "brand": "Vans",
+        "description": "Black ",
+        "price": 50,
+        "image": "https://bizweb.dktcdn.net/100/373/032/products/vans-old-skool-canvas-black-white.png?v=1601632272540",
+        "specs": [
+        {
+            "k": "color",
+            "v": "black/white"
+        },
+        {
+            "k": "size",
+            "v": "8US"
+        }
+    ],
+
+    "category": "Sneaker",
+    "inStock": "63f86da475d99f3b73a84d38"
     }
 }
 
@@ -25,17 +33,45 @@ Content-Type: application/json
 GET http://localhost:4000/products/get
 Content-Type: application/json
 
-### get product by id 
-GET http://localhost:4000/products/get/2
-  
+### get product by productId 
+GET http://localhost:4000/products/get/14
+
+### get brand products
+GET http://localhost:4000/products/get/brand?q=Nike
+
+
+### update product
+PATCH  http://localhost:4000/products/update/1 
+Content-Type: application/json
+
+{
+    "quantity" : 2,
+    "specs" : [
+        {
+            "k" : "color",
+            "v" : "red"
+        },
+        {
+            "k" : "size",
+            "v" : "8UK"
+        },
+        {
+            "k" : "cond",
+            "v" : "9/10"
+        }
+    ]
+}
+
+
 ### add inventory 
 POST http://localhost:4000/inventories/add
 Content-Type: application/json
 
 {
     "inventory": { 
-        "productId": 3,
-        "quantity": 1411,
+        "productId": 78,
+        "quantity": 6,
+        "brand" : "Vans",
         "reservation": []
     }
 }
@@ -44,20 +80,14 @@ Content-Type: application/json
 GET http://localhost:4000/inventories/get/1
 Content-Type: application/json
 
-
-
-
 ### add to cart 
 POST http://localhost:4000/carts/add
 Content-Type: application/json
 
 {
-     
-        "productId": 1,
-        "quantity": 2,
-        "price" : 100,
-        "userId": "1104" 
-    
+        "userId" : "404",
+        "productId": 1, 
+        "quantity": 5
 }
 
 ### remove from cart
@@ -65,21 +95,22 @@ PATCH http://localhost:4000/carts/remove
 Content-Type: application/json
 
 {
-    "userId":304,
-    "productId": 1,
-    "quantity": 5
+    "userId": "007",
+    "productId": 1
 }
 
-###
-GET  http://localhost:4000/carts/get/rORxYQCZCwJR8nZ8m164whlHnU4T-4OY
+### get cart items
+GET  http://localhost:4000/carts/get/404
 
+### get cart items quantity by productId
+GET  http://localhost:4000/carts/get-quantity/404
 
-
-### add to order 
+### create order
 POST http://localhost:4000/orders/add
 Content-Type: application/json  
 
-{
+{ 
+        "userId" : "007",
         "fullName" : "Huynh Gia Lam",
         "email" : "gialamhuynh3004@gmail.com",
         "phoneNumber" : "0966440814",
@@ -90,29 +121,36 @@ Content-Type: application/json
     
 }
 
-### REDIS set user 
-POST {{urlDev}}/redis/user 
+### create order test 
+POST http://localhost:4000/orders/add/test 
 Content-Type: application/json
 
 {
-    "key" : "u:1411",
+    "userId" : "404"
+}
+
+
+### get order 
+GET  http://localhost:4000/orders/get/007
+ 
+
+### REDIS set user 
+POST {{urlDev}}/redis/user/
+Content-Type: application/json
+
+{
+    "key" : "user-ily",
     "payload" : {
-        "uid" : 1411,
+        "uid" : 1141,
         "name" : "puonguyen.com"
     } 
 }
 
 ### REDIS get user 
-GET {{urlDev}}/redis/user
+GET {{urlDev}}/redis/user/u:304
 Content-Type: application/json
 
-{
-    "key" : "u:304",
-    "payload" : {
-        "uid" : 304,
-        "name" : "tinycloset.com"
-    } 
-}
 
+### user insert many 
+GET  {{urlDev}}/users/get/?page=2&pagesize=4
 
- 

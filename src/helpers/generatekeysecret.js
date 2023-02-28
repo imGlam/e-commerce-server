@@ -1,5 +1,6 @@
 const crypto = require("crypto");
 
-const key = crypto.randomBytes(32).toString("hex");
+const accsessKey = crypto.randomBytes(32).toString("hex");
+const refreshKey = crypto.randomBytes(32).toString("hex");
 
-module.exports = key;
+module.exports = { accsessKey, refreshKey };

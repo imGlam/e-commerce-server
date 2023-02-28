@@ -8,17 +8,22 @@ const handlebars = require("express-handlebars");
 const route = require("./router");
 const methodOverride = require("method-override");
 const cookieParser = require("cookie-parser");
-const sessions = require("express-session");
-const secretKey = require("./helpers/generatekeysecret");
+const session = require("express-session");
+const RedisStore = require("connect-redis")(session);
+const redisClient = require("./databases/redis");
+const bodyParser = require("body-parser");
 
 //set session
 const oneDay = 1000 * 60 * 60 * 24;
 const twoHours = 7200000;
 app.use(
-  sessions({
-    secret: secretKey,
+  session({
+    secret: "accsessKey",
+    store: new RedisStore({ client: redisClient }),
+    resave: true,
     saveUninitialized: true,
-    resave: false,
+    name: "sid",
+    cookie: { secure: false, httpOnly: true, maxAge: twoHours },
   })
 );
 
@@ -39,6 +44,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(methodOverride("_method"));
 app.use(cookieParser());
+app.use(bodyParser.json());
 
 app.engine(
   "hbs",
@@ -49,11 +55,6 @@ app.engine(
 );
 app.set("view engine", "hbs");
 app.set("views", path.join(__dirname, "resources", "views"));
-
-app.use("/", (req, res, next) => {
-  res.cookie("userId", req.session.id);
-  next();
-});
 
 route(app);
 
